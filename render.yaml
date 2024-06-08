@@ -1,6 +1,0 @@
-services:
-  - name: background-worker
-    env: python
-    start_cmd: worker.py
-    instanceCount: 1
-    autodeploy: true
