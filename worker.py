@@ -1,7 +1,10 @@
-import requests
-import time
+from flask import Flask
 
-while True:
-    response = requests.get("https://test-assingnement-api.onrender.com/keep-alive")
-    # print(response.text)
-    time.sleep(2)
+app = Flask(__name__)
+
+@app.route('/keep-alive')
+def keep_alive():
+    return 'Service is alive!'
+
+if __name__ == '__main__':
+    app.run(debug=True, port=8080)
