@@ -1,8 +1,10 @@
 from flask import Flask
+from flask_cors import CORS
 import requests
 import time
 
 app = Flask(__name__)
+CORS(app)
 
 def continuous_requests():
     while True:
