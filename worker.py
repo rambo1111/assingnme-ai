@@ -9,6 +9,6 @@ result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True)
 time.sleep(60)
 
 while True:
-  response = requests.get("https://test-assingnement-api.onrender.com/keep-alive")
+  response = requests.get("https://test2-kfkt.onrender.com/keep-alive")
   print(response.text)
   time.sleep(60)
