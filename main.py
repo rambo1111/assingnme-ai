@@ -129,7 +129,7 @@ async def process_file(file: UploadFile = File(...), subject: str = Form(...)):
         try:
             # Determine file type and process accordingly
             if file.filename.lower().endswith(".pdf", ".jpg", ".jpeg", ".png"):
-                response = handle_file(file_path, subject, model)
+                response = handle_file(file_path, subject)  # Removed the `model` parameter
             elif file.filename.lower().endswith((".docx", ".doc")):
                 response = "WE ARE UNDER DEVELOPMENT"
             else:
@@ -137,8 +137,8 @@ async def process_file(file: UploadFile = File(...), subject: str = Form(...)):
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))
     
-    
     return JSONResponse(content={"response": response})
+
 
 if __name__ == "__main__":
     import uvicorn
