@@ -128,12 +128,13 @@ async def process_file(file: UploadFile = File(...), subject: str = Form(...)):
 
         try:
             # Determine file type and process accordingly
-            if file.filename.lower().endswith(".pdf", ".jpg", ".jpeg", ".png"):
-                response = handle_file(file_path, subject)  # Removed the `model` parameter
+            if file.filename.lower().endswith((".pdf", ".jpg", ".jpeg", ".png")):
+                response = handle_file(file_path, subject)
             elif file.filename.lower().endswith((".docx", ".doc")):
                 response = "WE ARE UNDER DEVELOPMENT"
             else:
                 raise ValueError("Unsupported file type. Please provide a PDF or image file.")
+
         except Exception as e:
             raise HTTPException(status_code=400, detail=str(e))
     
