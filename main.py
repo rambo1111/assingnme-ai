@@ -20,10 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure Google Generative AI
-GOOGLE_API_KEY = 'AIzaSyCAzjRDfy9rbkP4v8CWCi9_vWaypLPY15c'
-genai.configure(api_key=GOOGLE_API_KEY)
-
 def handle_file(file_path, subject):
     # Check if the input file is a PDF or an image
     if file_path.lower().endswith('.pdf'):
