@@ -24,7 +24,7 @@ app.add_middleware(
 GOOGLE_API_KEY = 'AIzaSyCAzjRDfy9rbkP4v8CWCi9_vWaypLPY15c'
 genai.configure(api_key=GOOGLE_API_KEY)
 
-def process_file(file_path, subject):
+def handle_file(file_path, subject):
     # Check if the input file is a PDF or an image
     if file_path.lower().endswith('.pdf'):
         # Open the PDF file
@@ -133,7 +133,7 @@ async def process_file(file: UploadFile = File(...), subject: str = Form(...)):
         try:
             # Determine file type and process accordingly
             if file.filename.lower().endswith(".pdf", ".jpg", ".jpeg", ".png"):
-                response = handle_pdf(file_path, subject, model)
+                response = handle_file(file_path, subject, model)
             elif file.filename.lower().endswith((".docx", ".doc")):
                 response = "WE ARE UNDER DEVELOPMENT"
             else:
