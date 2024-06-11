@@ -1,4 +1,5 @@
-requests
-Flask
-gunicorn
-flask-cors
+fastapi
+uvicorn
+google-generativeai
+PyMuPDF
+Pillow
