@@ -91,10 +91,9 @@ async def shutdown_event():
 
 # logger.info("Starting the server...")
     
-# @app.head("/")
-# async def head_root():
-#     continuous_requests()
-#     return JSONResponse(content={"message": "Continuous requests completed."})
+@app.head("/")
+async def head_root():
+    logger.info("Server started")
 
 
 @app.get("/keep-alive")
