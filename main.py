@@ -35,7 +35,7 @@ def handle_file(file_path, subject):
     elif file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
         image_files.append(file_path)
     else:
-        raise HTTPException(status_code=400, detail="Unsupported file format. Please provide a PDF or an image file.")
+        raise HTTPException(status_code=400, detail=f"Unsupported file format: {file_path}")
         
     
     GOOGLE_API_KEY = 'AIzaSyA69r6qP6dBD1agDCBYgf1fk4xMNLogovk'
@@ -108,6 +108,8 @@ async def process_file(file: UploadFile = File(...), subject: str = Form(...)):
             file_path = os.path.join(tmpdirname, safe_filename)
             with open(file_path, "wb") as f:
                 f.write(await file.read())
+
+            print(f"Uploaded file: {file_path}")  # Add debugging statement
 
             # Handle the file
             response = handle_file(file_path, subject)
