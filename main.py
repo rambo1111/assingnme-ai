@@ -117,24 +117,16 @@ async def process_file(file: UploadFile = File(...), subject: str = Form(...)):
         # Create a temporary directory
         with tempfile.TemporaryDirectory() as tmpdirname:
             # Save the uploaded file to the temporary directory
-            file_path = os.path.join(tmpdirname, file.filename)
+            file_path = os.path.join(tmpdirname, secure_filename(file.filename))
             with open(file_path, "wb") as f:
                 f.write(await file.read())
 
-            try:
-                # Determine file type and process accordingly
-                if file.filename.lower().endswith((".pdf", ".jpg", ".jpeg", ".png")):
-                    response = handle_file(file_path, subject)  # Removed the `model` parameter
-                elif file.filename.lower().endswith((".docx", ".doc")):
-                    response = "WE ARE UNDER DEVELOPMENT"
-                else:
-                    raise ValueError("Unsupported file type. Please provide a PDF or image file.")
-            except Exception as e:
-                raise HTTPException(status_code=400, detail=str(e))
-        
-        return JSONResponse(content={"response": response})
+            # Handle the file
+            response = handle_file(file_path, subject)
+
+            return JSONResponse(content={"response": response})
     except Exception as e:
-        return JSONResponse(content={"error": str(e)}, status_code=500)
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
