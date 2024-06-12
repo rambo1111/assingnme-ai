@@ -9,6 +9,7 @@ import tempfile
 import fitz  # PyMuPDF
 from PIL import Image
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
+import subprocess
 
 app = FastAPI()
 
