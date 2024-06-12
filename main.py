@@ -44,11 +44,11 @@ app.add_middleware(
 #     except Exception as e:
 #         logger.error(f"Error occurred while restarting server: {e}")
 
-# @app.on_event("shutdown")
-# async def shutdown_event():
-#     restart_server()    
-#     response = requests.get("https://test-assingnement-api.onrender.com/keep-alive")
-#     logger.info(response.text)
+@app.on_event("shutdown")
+async def shutdown_event():
+    cmd_command = "python worker.py"
+    result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True)
+    
 
 # logger.info("Starting the server...")
     
