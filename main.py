@@ -24,29 +24,18 @@ app.add_middleware(
 def handle_file(file_path, subject):
     image_files = []
 
-    # Check if the input file is a PDF or an image
     if file_path.lower().endswith('.pdf'):
-        # Open the PDF file
-        pdf_document = fitz.open(file_path)
-        
-        # Convert each page to an image
-        zoom_x = 10.0  # horizontal zoom
-        zoom_y = 10.0  # vertical zoom
-        matrix = fitz.Matrix(zoom_x, zoom_y)
-        
-        for page_num in range(len(pdf_document)):
-            page = pdf_document.load_page(page_num)
-            pix = page.get_pixmap(matrix=matrix)
-            image_file = f'page_{page_num + 1}.png'
-            pix.save(image_file)
-            image_files.append(image_file)
-    
+        with fitz.open(file_path) as pdf_document:
+            for page_num in range(len(pdf_document)):
+                page = pdf_document.load_page(page_num)
+                pix = page.get_pixmap(matrix=fitz.Matrix(10.0, 10.0))
+                image_file = f'page_{page_num + 1}.png'
+                pix.save(image_file)
+                image_files.append(image_file)
     elif file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
         image_files.append(file_path)
-    
     else:
-        raise ValueError("Unsupported file format. Please provide a PDF or an image file.")
-    
+        raise HTTPException(status_code=400, detail="Unsupported file format. Please provide a PDF or an image file.")    
     GOOGLE_API_KEY = 'AIzaSyA69r6qP6dBD1agDCBYgf1fk4xMNLogovk'
     genai.configure(api_key=GOOGLE_API_KEY)
 
