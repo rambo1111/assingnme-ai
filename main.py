@@ -73,11 +73,15 @@ def handle_file(file_path, subject):
     return response.text
 
 def sanitize_filename(filename):
-    # Remove special characters and spaces from the filename
-    sanitized_name = re.sub(r'[^\w\-_.]', '', filename)
+    # Split the filename and extension
+    name, extension = os.path.splitext(filename)
+    # Remove special characters from the filename
+    sanitized_name = re.sub(r'[^\w\-_.]', '', name)
     # Generate a random string to prevent filename collisions
     random_string = str(uuid.uuid4())[:8]
-    return f"{sanitized_name}_{random_string}"
+    # Concatenate the sanitized name, original extension, and random string
+    return f"{sanitized_name}_{random_string}{extension}"
+
     
 @app.on_event("shutdown")
 async def shutdown_event():
