@@ -1,21 +1,21 @@
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, BackgroundTasks
+import os
+import re
+import uuid
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import google.generativeai as genai
 import tempfile
 import fitz  # PyMuPDF
 from PIL import Image
-import os
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-# import requests
-
 
 app = FastAPI()
 
-# Configure CORS to allow all origins
+# Configure CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow requests from all origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,7 +35,9 @@ def handle_file(file_path, subject):
     elif file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
         image_files.append(file_path)
     else:
-        raise HTTPException(status_code=400, detail="Unsupported file format. Please provide a PDF or an image file.")    
+        raise HTTPException(status_code=400, detail="Unsupported file format. Please provide a PDF or an image file.")
+        
+    
     GOOGLE_API_KEY = 'AIzaSyA69r6qP6dBD1agDCBYgf1fk4xMNLogovk'
     genai.configure(api_key=GOOGLE_API_KEY)
 
@@ -69,30 +71,14 @@ def handle_file(file_path, subject):
     )
     
     return response.text
+
+def sanitize_filename(filename):
+    # Remove special characters and spaces from the filename
+    sanitized_name = re.sub(r'[^\w\-_.]', '', filename)
+    # Generate a random string to prevent filename collisions
+    random_string = str(uuid.uuid4())[:8]
+    return f"{sanitized_name}_{random_string}"
     
-# def continuous_requests():
-#     try:
-#         response = requests.get("https://test-assingnement-api.onrender.com/keep-alive")
-#         print(response.text)
-#     except Exception as e:
-#         print(f"Error occurred: {e}")
-#     time.sleep(10)
-
-# def restart_server():
-#     logger.info("Server is restarting...")
-#     try:
-#         # Command to run
-#         cmd_command = "uvicorn main:app --reload"
-#         response = requests.get("https://test-assingnement-api.onrender.com/keep-alive")
-
-#         # Run the command
-#         result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True)
-
-#         # Print the result
-#         logger.info(result.stdout)
-#     except Exception as e:
-#         logger.error(f"Error occurred while restarting server: {e}")
-
 @app.on_event("shutdown")
 async def shutdown_event():
     cmd_command = "python worker.py"
@@ -116,8 +102,10 @@ async def process_file(file: UploadFile = File(...), subject: str = Form(...)):
     try:
         # Create a temporary directory
         with tempfile.TemporaryDirectory() as tmpdirname:
+            # Sanitize the filename
+            safe_filename = sanitize_filename(file.filename)
             # Save the uploaded file to the temporary directory
-            file_path = os.path.join(tmpdirname, secure_filename(file.filename))
+            file_path = os.path.join(tmpdirname, safe_filename)
             with open(file_path, "wb") as f:
                 f.write(await file.read())
 
