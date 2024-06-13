@@ -39,6 +39,9 @@ async def upload_file(file: UploadFile = File(...), subject: str = 'default'):
     
     except ValueError as ve:
         return PlainTextResponse(str(ve), status_code=400)
+    except Exception as e:
+        return PlainTextResponse(f"An unexpected error occurred: {str(e)}", status_code=500)
+
 
 @app.get("/")
 async def head_root():
