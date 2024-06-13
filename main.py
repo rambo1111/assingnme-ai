@@ -45,11 +45,11 @@ async def upload_file(file: UploadFile = File(...), subject: str = 'default'):
 # async def head_root():
 #     return {"message": "Welcome to the file upload and processing API!"}
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    cmd_command = "uvicorn main:app --reload"
-    result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True)
-    return result
+# @app.on_event("shutdown")
+# async def shutdown_event():
+#     cmd_command = "uvicorn main:app --reload"
+#     result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True)
+#     return result
 
 def process_file(file_path, subject):
     image_files = []
