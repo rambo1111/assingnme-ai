@@ -30,6 +30,13 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+@app.on_event("shutdown")
+async def shutdown_event():
+    cmd_command = "uvicorn main:app --reload"
+    result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True)
+    logger.info("Restarting...")
+    return result
+
 @app.post("/process-file/")
 async def upload_file(file: UploadFile = File(...), subject: str = 'default'):
     try:
@@ -113,7 +120,6 @@ def process_file(file_path, subject):
                  4. If the question says to draw a diagram don't draw it.'''
     ], safety_settings=safety_settings)
 
-    logger.info(f"Generated response: {response.text}")
     return PlainTextResponse(response.text)
 
 if __name__ == "__main__":
