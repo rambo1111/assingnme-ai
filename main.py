@@ -43,9 +43,9 @@ async def upload_file(file: UploadFile = File(...), subject: str = 'default'):
         return PlainTextResponse(f"An unexpected error occurred: {str(e)}", status_code=500)
 
 
-@app.get("/")
-async def head_root():
-    return {"message": "Welcome to the file upload and processing API!"}
+# @app.get("/")
+# async def head_root():
+#     return {"message": "Welcome to the file upload and processing API!"}
 
 @app.on_event("shutdown")
 async def shutdown_event():
