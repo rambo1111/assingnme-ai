@@ -61,8 +61,8 @@ def process_file(file_path, subject):
         pdf_document = fitz.open(file_path)
         
         # Convert each page to an image
-        zoom_x = 10.0  # horizontal zoom
-        zoom_y = 10.0  # vertical zoom
+        zoom_x = 5.0  # horizontal zoom
+        zoom_y = 5.0  # vertical zoom
         matrix = fitz.Matrix(zoom_x, zoom_y)
         
         for page_num in range(len(pdf_document)):
