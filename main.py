@@ -7,6 +7,7 @@ from pathlib import Path
 import fitz  # PyMuPDF
 from PIL import Image
 import google.generativeai as genai
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import logging
 
 app = FastAPI()
