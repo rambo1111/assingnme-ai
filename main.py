@@ -7,7 +7,7 @@ from pathlib import Path
 import fitz  # PyMuPDF
 from PIL import Image
 import google.generativeai as genai
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
+import logging
 
 app = FastAPI()
 
@@ -26,33 +26,33 @@ UPLOAD_DIR = Path(__file__).resolve().parent / 'uploaded_files'
 # Ensure the directory exists
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 @app.post("/process-file/")
 async def upload_file(file: UploadFile = File(...), subject: str = 'default'):
     try:
+        logger.info(f"Received file: {file.filename} with subject: {subject}")
         file_path = UPLOAD_DIR / file.filename
         
         with open(file_path, "wb") as f:
             f.write(file.file.read())
 
-        return process_file(str(file_path), subject)
+        response = process_file(str(file_path), subject)
+        logger.info(f"Response generated: {response}")
+        return response
     
     except ValueError as ve:
+        logger.error(f"ValueError: {ve}")
         return PlainTextResponse(str(ve), status_code=400)
     except Exception as e:
+        logger.error(f"Unexpected error: {e}")
         return PlainTextResponse(f"An unexpected error occurred: {str(e)}", status_code=500)
-
-# @app.get("/")
-# async def head_root():
-#     return {"message": "Welcome to the file upload and processing API!"}
-
-# @app.on_event("shutdown")
-# async def shutdown_event():
-#     cmd_command = "uvicorn main:app --reload"
-#     result = subprocess.run(cmd_command, shell=True, capture_output=True, text=True)
-#     return result
 
 def process_file(file_path, subject):
     image_files = []
+
+    logger.info(f"Processing file: {file_path}")
 
     # Check if the input file is a PDF or an image
     if file_path.lower().endswith('.pdf'):
@@ -70,6 +70,7 @@ def process_file(file_path, subject):
             image_file = f'page_{page_num + 1}.png'
             pix.save(image_file)
             image_files.append(image_file)
+            logger.info(f"Saved image file: {image_file}")
     
     elif file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
         image_files.append(file_path)
@@ -100,6 +101,7 @@ def process_file(file_path, subject):
             image
         ], safety_settings=safety_settings)
         extracted_text += result.text + "\n\n"
+        logger.info(f"Extracted text from image: {image_file}")
 
     # Process the extracted text with the generative model    
     response = model.generate_content([
@@ -110,6 +112,7 @@ def process_file(file_path, subject):
                  4. If the question says to draw a diagram don't draw it.'''
     ], safety_settings=safety_settings)
 
+    logger.info(f"Generated response: {response.text}")
     return PlainTextResponse(response.text)
 
 if __name__ == "__main__":
