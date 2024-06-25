@@ -118,7 +118,7 @@ def process_file(file_path, subject):
                  2. Don't use to **bold** or *italics* or ## for headings, just normal text without any markdown.
                  3. You can use a line break for next line.
                  4. If the question says to draw a diagram don't draw it.'''
-    ], safety_settings=safety_settings)
+    ], safety_settings=safety_settings, generation_config=genai.types.GenerationConfig(temperature=0.2))
 
     return PlainTextResponse(response.text)
 
