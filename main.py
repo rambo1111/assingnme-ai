@@ -80,7 +80,7 @@ def process_file(file_path, subject):
             image_files.append(image_file)
             logger.info(f"Saved image file: {image_file}")
     
-    elif file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
+    elif file_path.lower().endswith(('.png', '.jpg', '.jpeg','.heic')):
         image_files.append(file_path)
     
     else:
