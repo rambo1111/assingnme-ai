@@ -4,3 +4,4 @@ uvicorn
 google-generativeai
 PyMuPDF
 Pillow
+python-multipart
