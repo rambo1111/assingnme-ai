@@ -86,7 +86,7 @@ def process_file(file_path, subject):
     else:
         raise ValueError("Unsupported file format. Please provide a PDF or an image file.")
     
-    GOOGLE_API_KEY = 'AIzaSyABIXL9sj3OkzSz1j3gFPrhIPaSiCbEpAY'
+    GOOGLE_API_KEY = 'AIzaSyBePlvw3R-lufo5TED_OwQUD_3UqT8I0Vo'
     genai.configure(api_key=GOOGLE_API_KEY)
 
     safety_settings = {
